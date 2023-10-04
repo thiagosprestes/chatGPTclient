@@ -1,103 +1,39 @@
-import React, {ReactElement, useRef} from 'react';
-import {
-  FlatList,
-  Text,
-  TextInput,
-  TextStyle,
-  TouchableOpacity,
-  View,
-  ViewStyle,
-} from 'react-native';
-import LottieView from 'lottie-react-native';
+import React from 'react';
+import {Text, TouchableOpacity, View} from 'react-native';
 import styles from './styles';
-import Send from '../../../assets/send.svg';
-import Mic from '../../../assets/mic.svg';
-import typing from '../../../assets/typing.json';
-import {Header} from '../../../components/Header';
-import {Choice} from '../../../models/choice';
-import {Role} from '../../../models/role';
+import Image from '../assets/image.svg';
+import Type from '../assets/type.svg';
+import {colors} from '../../../utils/styleguide/colors';
 
 interface HomeProps {
-  chat: Choice[];
-  onSendMessage(): void;
-  onChangeInput(value: string): void;
-  inputValue: string;
-  isLoading: boolean;
+  onGoToTextGenerator(): void;
+  onGoToImageGenerator(): void;
 }
 
-interface MessageStyle {
-  container: ViewStyle;
-  text: TextStyle;
-}
-
-const Home = ({
-  chat,
-  onSendMessage,
-  onChangeInput,
-  inputValue,
-  isLoading,
-}: HomeProps) => {
-  const recordIconSize = 22;
-  const sendIconSize = 22;
-
-  const flatListRef = useRef<FlatList>(null);
-
-  const renderMessageStyle = (message: Choice): MessageStyle => {
-    const isRoleUser = message.message.role === Role.user;
-
-    if (isRoleUser) {
-      return {container: styles.userMessage, text: styles.userMessageText};
-    }
-
-    return {container: styles.botMessage, text: styles.botMessageText};
-  };
-
-  const renderMessage = ({item}: {item: Choice}) => (
-    <View style={[styles.message, renderMessageStyle(item).container]}>
-      <Text style={renderMessageStyle(item).text}>{item.message.content}</Text>
-    </View>
-  );
-
-  const separator = (): ReactElement => <View style={styles.separator} />;
-
-  return (
-    <View style={styles.container}>
-      <Header title="chatGPT" />
-      <FlatList
-        ref={flatListRef}
-        contentContainerStyle={styles.contentContainerStyle}
-        showsVerticalScrollIndicator={false}
-        data={chat}
-        renderItem={renderMessage}
-        ItemSeparatorComponent={separator}
-        onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
-        keyExtractor={(item, index) => String(index)}
-      />
-      {isLoading && (
-        <LottieView source={typing} style={styles.loading} loop autoPlay />
-      )}
-      <View style={styles.footer}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={inputValue}
-            style={styles.input}
-            onChangeText={value => onChangeInput(value)}
-          />
-          <TouchableOpacity style={styles.record}>
-            <Mic width={recordIconSize} height={recordIconSize} />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onSendMessage}
-            disabled={inputValue.length === 0 || isLoading}
-            style={
-              (inputValue.length === 0 || isLoading) && styles.disabledButton
-            }>
-            <Send width={sendIconSize} height={sendIconSize} />
-          </TouchableOpacity>
-        </View>
+const Home = ({onGoToTextGenerator, onGoToImageGenerator}: HomeProps) => (
+  <View style={styles.container}>
+    <TouchableOpacity
+      style={[styles.card, styles.firstCard]}
+      onPress={onGoToTextGenerator}>
+      <Image color={colors.white} />
+      <View style={styles.cardInfo}>
+        <Text style={styles.cardTitle}>Gerador de texto</Text>
+        <Text style={styles.cardDescription}>
+          Gere textos utilizando a API aberta do chatGPT
+        </Text>
       </View>
-    </View>
-  );
-};
+    </TouchableOpacity>
+    <TouchableOpacity style={styles.card} onPress={onGoToImageGenerator}>
+      <Type color={colors.white} />
+      <View style={styles.cardInfo}>
+        <Text style={styles.cardTitle}>Gerador de imagem</Text>
+        <Text style={styles.cardDescription}>
+          Gere imagens com base no texto desejado utilizando a API aberta do
+          DALL-E
+        </Text>
+      </View>
+    </TouchableOpacity>
+  </View>
+);
 
 export {Home};

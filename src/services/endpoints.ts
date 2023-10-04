@@ -23,11 +23,18 @@ interface CompletionResponse {
 }
 
 const postCompletions = async (message: string) => {
-  const response = await client.post<CompletionResponse>('completions', {
+  const response = await client.post<CompletionResponse>('chat/completions', {
     model: 'gpt-3.5-turbo',
     messages: [{role: 'user', content: message}],
   });
   return response;
 };
 
-export {postCompletions};
+const postGenerations = async (message: string) => {
+  const response = await client.post<CompletionResponse>('images/generations', {
+    prompt: message,
+  });
+  return response;
+};
+
+export {postCompletions, postGenerations};

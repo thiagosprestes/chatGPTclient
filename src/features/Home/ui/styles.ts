@@ -9,63 +9,34 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
-  },
-  content: {
-    flex: 1,
-  },
-  contentContainerStyle: {
     padding: horizontalScale(29),
   },
-  footer: {
-    padding: horizontalScale(20),
-    borderColor: colors.lightGray,
-    borderTopWidth: 1,
-    backgroundColor: colors.white,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderRadius: 50,
-    borderColor: colors.lightGray,
-    paddingVertical: 0,
-    paddingHorizontal: horizontalScale(10),
-  },
-  input: {
-    flex: 1,
-    paddingVertical: 5,
-    color: colors.darkGray,
-    fontFamily: 'NunitoRegular',
-  },
-  record: {marginRight: horizontalScale(5)},
-  message: {
-    padding: horizontalScale(22),
-    borderRadius: 25,
-    maxWidth: horizontalScale(250),
-  },
-  userMessage: {
+  card: {
     backgroundColor: colors.primaryBlue,
-    borderTopRightRadius: 0,
-    alignSelf: 'flex-end',
+    padding: horizontalScale(14),
+    borderRadius: 8,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  botMessage: {
-    backgroundColor: colors.backgroundGrey,
-    borderBottomLeftRadius: 0,
-    alignSelf: 'flex-start',
-  },
-  userMessageText: {
+  cardTitle: {
+    fontSize: 16,
     color: colors.white,
+    fontWeight: 'bold',
+    fontFamily: 'NunitoBold',
+  },
+  cardInfo: {
+    marginLeft: horizontalScale(10),
+    flex: 1,
+  },
+  cardDescription: {
+    color: colors.white,
+    fontSize: 14,
     fontFamily: 'NunitoRegular',
   },
-  botMessageText: {
-    color: colors.darkGray,
-    fontFamily: 'NunitoRegular',
+  firstCard: {
+    marginBottom: verticalScale(12),
   },
-  disabledButton: {
-    opacity: 0.5,
-  },
-  separator: {marginBottom: 18},
-  loading: {height: verticalScale(30), width: horizontalScale(100)},
 });
 
 export default styles;
