@@ -1,42 +1,73 @@
 import React from 'react';
 import {
-  ScrollView,
+  FlatList,
   Text,
   TextInput,
+  TextStyle,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 import styles from './styles';
 import Send from '../../../assets/send.svg';
 import Mic from '../../../assets/mic.svg';
 import {Header} from '../../../components/Header';
+import {Choice} from '../../../models/choice';
+import {Role} from '../../../models/role';
 
-interface HomeProps {}
+interface HomeProps {
+  chat: Choice[];
+  onSendMessage(): void;
+  onChangeInput(value: string): void;
+  inputValue: string;
+}
 
-const Home = ({}: HomeProps) => {
+interface MessageStyle {
+  container: ViewStyle;
+  text: TextStyle;
+}
+
+const Home = ({chat, onSendMessage, onChangeInput, inputValue}: HomeProps) => {
   const recordIconSize = 22;
   const sendIconSize = 22;
+
+  const renderMessageStyle = (message: Choice): MessageStyle => {
+    const isRoleUser = message.message.role === Role.user;
+
+    if (isRoleUser) {
+      return {container: styles.userMessage, text: styles.userMessageText};
+    }
+
+    return {container: styles.botMessage, text: styles.botMessageText};
+  };
+
+  const renderMessage = ({item}: {item: Choice}) => (
+    <View style={[styles.message, renderMessageStyle(item).container]}>
+      <Text style={renderMessageStyle(item).text}>{item.message.content}</Text>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       <Header title="chatGPT" />
-      <ScrollView
+      <FlatList
         contentContainerStyle={styles.contentContainerStyle}
-        showsVerticalScrollIndicator={false}>
-        <View style={[styles.message, styles.userMessage]}>
-          <Text style={styles.userMessageText}>Olá mundo</Text>
-        </View>
-        <View style={[styles.message, styles.botMessage]}>
-          <Text style={styles.botMessageText}>Olá mundo</Text>
-        </View>
-      </ScrollView>
+        showsVerticalScrollIndicator={false}
+        data={chat}
+        renderItem={renderMessage}
+        keyExtractor={item => String(item.index)}
+      />
       <View style={styles.footer}>
         <View style={styles.inputContainer}>
-          <TextInput style={styles.input} />
+          <TextInput
+            value={inputValue}
+            style={styles.input}
+            onChangeText={value => onChangeInput(value)}
+          />
           <TouchableOpacity style={styles.record}>
             <Mic width={recordIconSize} height={recordIconSize} />
           </TouchableOpacity>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={onSendMessage}>
             <Send width={sendIconSize} height={sendIconSize} />
           </TouchableOpacity>
         </View>
