@@ -5,11 +5,12 @@ import styles from './styles';
 
 interface HeaderProps {
   title: string;
+  onBack(): void;
 }
 
-const Header = ({title}: HeaderProps) => (
+const Header = ({title, onBack}: HeaderProps) => (
   <View style={styles.header}>
-    <TouchableOpacity>
+    <TouchableOpacity onPress={onBack}>
       <Back />
     </TouchableOpacity>
     <Text style={styles.title}>{title}</Text>
