@@ -36,7 +36,7 @@
 		</dict>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -51,5 +51,14 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>RobotoSlabBold.ttf</string>
+		<string>RobotoSlabMedium.ttf</string>
+		<string>RobotoSlabRegular.ttf</string>
+		<string>NunitoBold.ttf</string>
+		<string>NunitoRegular.ttf</string>
+		<string>NunitoSemibold.ttf</string>
+	</array>
 </dict>
 </plist>
