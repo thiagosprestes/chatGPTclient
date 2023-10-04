@@ -1,8 +1,9 @@
+import {ReactElement} from 'react';
 import {Role} from './role';
 
 interface Message {
   role: Role;
-  content: string;
+  content: string | ReactElement;
 }
 
 export type {Message};

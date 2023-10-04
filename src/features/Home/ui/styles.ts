@@ -65,6 +65,7 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   separator: {marginBottom: 18},
+  loading: {height: verticalScale(30), width: horizontalScale(100)},
 });
 
 export default styles;

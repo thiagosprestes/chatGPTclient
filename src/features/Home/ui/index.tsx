@@ -1,4 +1,4 @@
-import React, {ReactElement} from 'react';
+import React, {ReactElement, useRef} from 'react';
 import {
   FlatList,
   Text,
@@ -8,9 +8,11 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+import LottieView from 'lottie-react-native';
 import styles from './styles';
 import Send from '../../../assets/send.svg';
 import Mic from '../../../assets/mic.svg';
+import typing from '../../../assets/typing.json';
 import {Header} from '../../../components/Header';
 import {Choice} from '../../../models/choice';
 import {Role} from '../../../models/role';
@@ -38,6 +40,8 @@ const Home = ({
   const recordIconSize = 22;
   const sendIconSize = 22;
 
+  const flatListRef = useRef<FlatList>(null);
+
   const renderMessageStyle = (message: Choice): MessageStyle => {
     const isRoleUser = message.message.role === Role.user;
 
@@ -60,12 +64,18 @@ const Home = ({
     <View style={styles.container}>
       <Header title="chatGPT" />
       <FlatList
+        ref={flatListRef}
         contentContainerStyle={styles.contentContainerStyle}
         showsVerticalScrollIndicator={false}
         data={chat}
         renderItem={renderMessage}
         ItemSeparatorComponent={separator}
+        onContentSizeChange={() => flatListRef.current?.scrollToEnd()}
+        keyExtractor={(item, index) => String(index)}
       />
+      {isLoading && (
+        <LottieView source={typing} style={styles.loading} loop autoPlay />
+      )}
       <View style={styles.footer}>
         <View style={styles.inputContainer}>
           <TextInput
