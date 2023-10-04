@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
 import {
   FlatList,
   Text,
@@ -20,6 +20,7 @@ interface HomeProps {
   onSendMessage(): void;
   onChangeInput(value: string): void;
   inputValue: string;
+  isLoading: boolean;
 }
 
 interface MessageStyle {
@@ -27,7 +28,13 @@ interface MessageStyle {
   text: TextStyle;
 }
 
-const Home = ({chat, onSendMessage, onChangeInput, inputValue}: HomeProps) => {
+const Home = ({
+  chat,
+  onSendMessage,
+  onChangeInput,
+  inputValue,
+  isLoading,
+}: HomeProps) => {
   const recordIconSize = 22;
   const sendIconSize = 22;
 
@@ -47,6 +54,8 @@ const Home = ({chat, onSendMessage, onChangeInput, inputValue}: HomeProps) => {
     </View>
   );
 
+  const separator = (): ReactElement => <View style={styles.separator} />;
+
   return (
     <View style={styles.container}>
       <Header title="chatGPT" />
@@ -55,7 +64,7 @@ const Home = ({chat, onSendMessage, onChangeInput, inputValue}: HomeProps) => {
         showsVerticalScrollIndicator={false}
         data={chat}
         renderItem={renderMessage}
-        keyExtractor={item => String(item.index)}
+        ItemSeparatorComponent={separator}
       />
       <View style={styles.footer}>
         <View style={styles.inputContainer}>
@@ -67,7 +76,12 @@ const Home = ({chat, onSendMessage, onChangeInput, inputValue}: HomeProps) => {
           <TouchableOpacity style={styles.record}>
             <Mic width={recordIconSize} height={recordIconSize} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={onSendMessage}>
+          <TouchableOpacity
+            onPress={onSendMessage}
+            disabled={inputValue.length === 0 || isLoading}
+            style={
+              (inputValue.length === 0 || isLoading) && styles.disabledButton
+            }>
             <Send width={sendIconSize} height={sendIconSize} />
           </TouchableOpacity>
         </View>

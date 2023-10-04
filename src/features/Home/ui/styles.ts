@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     padding: horizontalScale(22),
     borderRadius: 25,
     maxWidth: horizontalScale(250),
-    marginBottom: verticalScale(25),
   },
   userMessage: {
     backgroundColor: colors.primaryBlue,
@@ -62,6 +61,10 @@ const styles = StyleSheet.create({
     color: colors.darkGray,
     fontFamily: 'NunitoRegular',
   },
+  disabledButton: {
+    opacity: 0.5,
+  },
+  separator: {marginBottom: 18},
 });
 
 export default styles;

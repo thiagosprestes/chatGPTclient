@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import {Home} from './ui';
 import {Choice} from '../../models/choice';
 import {Role} from '../../models/role';
+import {useMutation} from 'react-query';
+import {postCompletions} from '../../services/completions';
 
 interface HomeProps {}
 
@@ -9,28 +11,40 @@ const HomeSreen = ({}: HomeProps) => {
   const [chat, setChat] = useState<Choice[]>([]);
   const [input, setInput] = useState('');
 
-  const haveMessages = chat.length > 0;
-  const messagesLenght = chat.length;
-
-  const lastMessageIndex = messagesLenght - 1;
+  const {mutate, isLoading} = useMutation(postCompletions, {
+    onMutate: () => {
+      setChat(oldValue => [
+        ...oldValue,
+        {
+          message: {
+            role: Role.user,
+            content: input,
+          },
+        },
+      ]);
+    },
+    onSuccess: ({data}) => {
+      setChat(oldValue => [
+        ...oldValue,
+        {
+          message: {
+            role: data.choices[0].message.role,
+            content: data.choices[0].message.content,
+          },
+        },
+      ]);
+    },
+    onError: error => {
+      console.log('there was an error', error);
+    },
+  });
 
   const handleOnSendMessage = () => {
+    mutate(input);
     setInput('');
-    setChat(oldValue => [
-      ...oldValue,
-      {
-        index: haveMessages ? chat[lastMessageIndex].index + 1 : 0,
-        message: {
-          role: Role.user,
-          content: input,
-        },
-      },
-    ]);
   };
 
-  const handleOnChangeInput = (value: string) => {
-    setInput(value);
-  };
+  const handleOnChangeInput = (value: string) => setInput(value);
 
   return (
     <Home
@@ -38,6 +52,7 @@ const HomeSreen = ({}: HomeProps) => {
       onSendMessage={handleOnSendMessage}
       onChangeInput={handleOnChangeInput}
       inputValue={input}
+      isLoading={isLoading}
     />
   );
 };
