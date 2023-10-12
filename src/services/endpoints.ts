@@ -13,6 +13,10 @@ interface Usage {
   total_tokens: number;
 }
 
+interface ImageGenerationData {
+  url: string;
+}
+
 interface CompletionResponse {
   id: string;
   object: string;
@@ -20,6 +24,11 @@ interface CompletionResponse {
   model: string;
   choices: Choice[];
   usage: Usage;
+}
+
+interface ImageGenerationResponse {
+  created: number;
+  data: ImageGenerationData[];
 }
 
 const postCompletions = async (message: string) => {
@@ -31,9 +40,12 @@ const postCompletions = async (message: string) => {
 };
 
 const postGenerations = async (message: string) => {
-  const response = await client.post<CompletionResponse>('images/generations', {
-    prompt: message,
-  });
+  const response = await client.post<ImageGenerationResponse>(
+    'images/generations',
+    {
+      prompt: message,
+    },
+  );
   return response;
 };
 

@@ -1,11 +1,11 @@
 import React, {useState} from 'react';
 import {ImageGeneration} from './ui';
-import {Choice} from '../../models/choice';
 import {Role} from '../../models/role';
 import {useMutation} from 'react-query';
-import {postCompletions} from '../../services/endpoints';
+import {postGenerations} from '../../services/endpoints';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RoutesParams} from '../../navigation/routes';
+import {ImageChat} from '../../models/Image';
 
 type ImageGenerationScreenProps = NativeStackScreenProps<
   RoutesParams,
@@ -13,18 +13,16 @@ type ImageGenerationScreenProps = NativeStackScreenProps<
 >;
 
 const ImageGenerationScreen = ({navigation}: ImageGenerationScreenProps) => {
-  const [chat, setChat] = useState<Choice[]>([]);
+  const [chat, setChat] = useState<ImageChat[]>([]);
   const [input, setInput] = useState('');
 
-  const {mutate, isLoading} = useMutation(postCompletions, {
+  const {mutate, isLoading} = useMutation(postGenerations, {
     onMutate: () => {
       setChat(oldValue => [
         ...oldValue,
         {
-          message: {
-            role: Role.user,
-            content: input,
-          },
+          role: Role.user,
+          message: input,
         },
       ]);
     },
@@ -32,10 +30,8 @@ const ImageGenerationScreen = ({navigation}: ImageGenerationScreenProps) => {
       setChat(oldValue => [
         ...oldValue,
         {
-          message: {
-            role: data.choices[0].message.role,
-            content: data.choices[0].message.content,
-          },
+          role: Role.assistant,
+          message: data.data[0].url,
         },
       ]);
     },
