@@ -1,4 +1,5 @@
 import React, {useState} from 'react';
+import {Alert} from 'react-native';
 import {TextGeneration} from './ui';
 import {Choice} from '../../models/choice';
 import {Role} from '../../models/role';
@@ -12,35 +13,40 @@ type TextGenerationScreenProps = NativeStackScreenProps<
   'TextGeneration'
 >;
 
+interface OnCreateChatMessageProps {
+  role: Role;
+  content: string;
+}
+
 const TextGenerationScreen = ({navigation}: TextGenerationScreenProps) => {
   const [chat, setChat] = useState<Choice[]>([]);
   const [input, setInput] = useState('');
 
+  const onCreateChatMessage = ({role, content}: OnCreateChatMessageProps) =>
+    setChat(oldValue => [
+      ...oldValue,
+      {
+        message: {
+          role,
+          content,
+        },
+      },
+    ]);
+
   const {mutate, isLoading} = useMutation(postCompletions, {
-    onMutate: () => {
-      setChat(oldValue => [
-        ...oldValue,
-        {
-          message: {
-            role: Role.user,
-            content: input,
-          },
-        },
-      ]);
-    },
-    onSuccess: ({data}) => {
-      setChat(oldValue => [
-        ...oldValue,
-        {
-          message: {
-            role: data.choices[0].message.role,
-            content: data.choices[0].message.content,
-          },
-        },
-      ]);
-    },
+    onMutate: () =>
+      onCreateChatMessage({
+        role: Role.user,
+        content: input,
+      }),
+    onSuccess: ({data}) =>
+      onCreateChatMessage({
+        role: Role.assistant,
+        content: data.choices[0].message.content,
+      }),
     onError: error => {
       console.log('there was an error', error);
+      Alert.alert('Erro desconhecido', 'Ocorreu um erro desconhecido :(');
     },
   });
 
@@ -51,9 +57,7 @@ const TextGenerationScreen = ({navigation}: TextGenerationScreenProps) => {
 
   const handleOnChangeInput = (value: string) => setInput(value);
 
-  const handleOnBack = () => {
-    navigation.goBack();
-  };
+  const handleOnBack = () => navigation.goBack();
 
   return (
     <TextGeneration
